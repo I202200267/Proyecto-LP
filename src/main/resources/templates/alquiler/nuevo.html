@@ -1,0 +1,206 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/layout :: layoutBase(~{::contenido})">
+
+<div th:fragment="contenido">
+
+	<div class="container mt-4">
+
+		<!-- Formulario principal de Registro que envuelve toda la vista -->
+		<form th:action="@{/alquiler/registrar}" method="post">
+			
+			<div class="row mb-3 mt-5 align-items-center">
+				<div class="col-md-10">
+					<h1 class="m-0">Registro de Alquiler de Vehículo</h1>
+					<h5 class="text-muted mt-1" th:if="${cliente != null}" th:text="|Cliente: ${cliente.nombres} ${cliente.apellidos}|">
+					</h5>
+				</div>
+
+				<div class="col-md-2">
+					<button type="submit" class="btn btn-primary w-100">
+						Registrar
+						<i class="fa-solid fa-floppy-disk"></i>
+					</button>
+				</div>
+			</div>
+		</form>
+
+		<div class="card mb-4">
+			<div class="card-body">
+				<div class="row">
+					<div class="col-md-3">
+						<p class="m-0">
+							<strong>Fecha:</strong>
+							<span th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy')}"></span>
+						</p>
+					</div>
+					<div class="col-md-6 ms-auto">
+						<!-- Formulario para buscar cliente por DNI -->
+						<form th:action="@{/alquiler/validar-cliente}" method="get" th:if="${cliente == null}">
+							<div class="row">
+								<label for="dni" class="col-sm-6 col-form-label">Buscar cliente por DNI:</label>
+								<div class="col-sm-6">
+									<div class="input-group">
+										<input type="text" class="form-control" placeholder="Ingrese DNI" name="dni" required>
+										<button class="btn btn-outline-secondary" type="submit" name="accion" value="buscar">
+											<i class="fa-solid fa-magnifying-glass"></i>
+										</button>
+									</div>
+								</div>
+							</div>
+						</form>
+
+						<!-- Vista cuando el cliente ya está seleccionado (Muestra el nombre y el botón limpiar) -->
+						<div class="row" th:unless="${cliente == null}">
+							<label class="col-sm-6 col-form-label">Cliente Seleccionado:</label>
+							<div class="col-sm-6">
+								<div class="input-group">
+									<input type="text" class="form-control bg-light" th:value="${cliente.nombres + ' ' + cliente.apellidos}" readonly>
+									<a th:href="@{/alquiler/validar-cliente(accion='limpiar')}" class="btn btn-outline-danger" title="Limpiar cliente">
+									    <i class="fa-solid fa-eraser"></i>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Sección de Selección de Vehículo -->
+		<div class="card mb-4">
+			<div class="card-body">
+
+				<!-- Botón para abrir el modal -->
+				<button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalVehiculos">
+					<i class="fa-solid fa-magnifying-glass"></i> Seleccionar Vehículo
+				</button>
+
+				<!-- Formulario para agregar vehículo seleccionado -->
+				<form id="form-agregar-vehiculo" novalidate th:action="@{/alquiler/agregar}" method="post"
+					th:object="${vehiculoSeleccionado}" class="needs-validation">
+					<div class="row g-2 align-items-end">
+						<div class="col-md-2">
+							<label for="idVehiculo">Código</label>
+							<input type="text" class="form-control" th:field="*{idVehiculo}" readonly>
+						</div>
+						<div class="col-md-3">
+							<label for="placa">Placa</label>
+							<input type="text" class="form-control" th:field="*{placa}" readonly>
+						</div>
+						<div class="col-md-3">
+							<label for="modelo">Modelo</label>
+							<input type="text" class="form-control" th:field="*{modelo}" readonly>
+						</div>
+						<div class="col-md-2">
+							<label for="precioDiario">Precio Diario</label>
+							<input type="text" class="form-control" th:field="*{precioDiario}">
+						</div>
+						<div class="col-md-2">
+							<label for="dias">Días</label>
+							<input type="number" class="form-control" th:field="*{dias}">
+						</div>
+						<div class="col-md-12 d-grid mt-3">
+							<button class="btn btn-success">
+								<i class="fa-solid fa-plus"></i> Agregar Vehículo al Alquiler
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<!-- Tabla de Detalle de Vehículos Seleccionados -->
+		<div class="card">
+			<div class="card-body">
+				<h5>Vehículos Seleccionados</h5>
+				<div class="table-responsive">
+					<table class="table table-bordered align-middle">
+						<thead class="table-dark text-center">
+							<tr>
+								<th>Código</th>
+								<th>Placa</th>
+								<th>Modelo</th>
+								<th>Precio Diario</th>
+								<th>Días</th>
+								<th>Subtotal</th>
+								<th>Acciones</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="item : ${seleccionados}">
+								<td th:text="${item.idVehiculo}" class="text-center"></td>
+								<td th:text="${item.placa}"></td>
+								<td th:text="${item.modelo}"></td>
+								<td th:text="${#numbers.formatCurrency(item.precioDiario)}" class="text-end"></td>
+								<td th:text="${item.dias}" class="text-end"></td>
+								<td th:text="${#numbers.formatCurrency(item.subtotal)}" class="text-end"></td>
+								<td class="text-center">
+									<form th:action="@{/alquiler/remover}" method="post">
+										<input type="hidden" name="id" th:value="${item.idVehiculo}" />
+										<button class="btn btn-danger btn-sm">
+											<i class="fa-solid fa-trash"></i> Remover
+										</button>
+									</form>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Fragmento Modal de Selección de Vehículos -->
+	<div th:replace="fragmento/modal-vehiculos :: modal-vehiculos(${vehiculos}, 'modalVehiculos')"></div>
+
+	<th:block th:utext="${alert}"></th:block>
+
+	<!-- Script con jQuery para transferir datos del modal al formulario -->
+	<script>
+		$(document).ready(function () {
+			$(document).on('click', '.btnSeleccionarVehiculo', function () {
+				let idVehiculo = $(this).data('param1');
+				let placa = $(this).data('param2');
+				let modelo = $(this).data('param3');
+				let precioDiario = $(this).data('param4');
+
+				$('#idVehiculo').val(idVehiculo);
+				$('#placa').val(placa);
+				$('#modelo').val(modelo);
+				$('#precioDiario').val(precioDiario);
+				$('#dias').val(1);
+
+				const modal = bootstrap.Modal.getOrCreateInstance(
+					$('#modalVehiculos')[0]
+				);
+
+				modal.hide();
+			});
+		});
+
+		$(document).ready(function () {
+			$("#form-agregar-vehiculo").validate({
+				rules: {
+					placa: { required: true },
+					precioDiario: { required: true, min: 0.01 },
+					dias: { required: true, min: 1 }
+				},
+				messages: {
+					placa: { required: "Seleccione un vehículo" },
+					precioDiario: { required: "Campo requerido", min: "El precio no puede ser 0" },
+					dias: { required: "Campo requerido", min: "Mínimo 1 día" }
+				},
+				errorElement: 'div',
+				errorClass: 'invalid-tooltip',
+				highlight: function (element) {
+					$(element).addClass('is-invalid').removeClass('is-valid');
+				},
+				unhighlight: function (element) {
+					$(element).removeClass('is-invalid').addClass('is-valid');
+				}
+			});
+		});
+	</script>
+</div>
+
+</html>

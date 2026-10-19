@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/layout :: layoutBase(~{::contenido})">
+
+<div th:fragment="contenido">
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Gestión de Clientes</h2>
+            <a th:href="@{/cliente/nuevo}" class="btn btn-success">
+                <i class="fa-solid fa-plus"></i> Nuevo Cliente
+            </a>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <table class="table table-striped table-bordered align-middle">
+                    <thead class="table-dark text-center">
+                        <tr>
+                            <th>ID</th>
+                            <th>DNI</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+						<tr th:each="c : ${lstClientes}">
+						    <td th:text="${c.idCliente}" class="text-center"></td>
+						    <td th:text="${c.dni}"></td>
+						    <td th:text="${c.nombres}"></td>
+						    <td th:text="${c.apellidos}"></td>
+						    <td th:text="${c.telefono}"></td>
+						    <td th:text="${c.email}"></td>
+						    <td class="text-center">
+						        <a th:href="@{/cliente/edicion/{id}(id=${c.idCliente})}" class="btn btn-warning btn-sm">
+						            <i class="fa-solid fa-pen"></i>
+						        </a>
+						    </td>
+						</tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html>

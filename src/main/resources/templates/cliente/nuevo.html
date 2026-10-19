@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <title>Nuevo Cliente</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0"><i class="fa-solid fa-user-plus me-2"></i>Registrar Nuevo Cliente</h4>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/cliente/registrar}" th:object="${cliente}" method="post">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="dni" class="form-label">DNI:</label>
+                                    <input type="text" id="dni" th:field="*{dni}" maxlength="15" class="form-control" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="nombres" class="form-label">Nombres:</label>
+                                    <input type="text" id="nombres" th:field="*{nombres}" class="form-control" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="apellidos" class="form-label">Apellidos:</label>
+                                    <input type="text" id="apellidos" th:field="*{apellidos}" class="form-control" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="telefono" class="form-label">Teléfono:</label>
+                                    <input type="text" id="telefono" th:field="*{telefono}" class="form-control" />
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="email" class="form-label">Email:</label>
+                                    <input type="email" id="email" th:field="*{email}" class="form-control" />
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 mt-4">
+                                <a th:href="@{/cliente/listado}" class="btn btn-secondary">
+                                    <i class="fa-solid fa-arrow-left me-1"></i>Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fa-solid fa-floppy-disk me-1"></i>Guardar Cliente
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

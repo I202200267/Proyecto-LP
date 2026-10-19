@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="layouts/layout :: layoutBase(~{::contenido})">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio - Alquiler de Vehículos</title>
+</head>
+<body>
+
+    <div th:fragment="contenido">
+       
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="fw-bold text-dark">Panel Principal</h2>
+                <p class="text-muted">Resumen general del sistema de alquiler de vehículos.</p>
+                <hr>
+            </div>
+        </div>
+
+      
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100 text-center p-3">
+                    <div class="card-body">
+                        <div class="display-4 text-primary mb-2">🚗</div>
+                        <h4 class="fw-bold">Gestión de Vehículos</h4>
+                        <p class="text-muted small">Administra la flota, precios, marcas y modelos disponibles.</p>
+                        <a th:href="@{/vehiculo/listado}" class="btn btn-primary btn-sm px-4">Ir a Vehículos</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100 text-center p-3">
+                    <div class="card-body">
+                        <div class="display-4 text-success mb-2">📋</div>
+                        <h4 class="fw-bold">Nuevo Alquiler</h4>
+                        <p class="text-muted small">Crea contratos de renta de manera rápida y sencilla.</p>
+                        <a th:href="@{/alquiler/nuevo}" class="btn btn-success btn-sm px-4">Registrar Alquiler</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100 text-center p-3">
+                    <div class="card-body">
+                        <div class="display-4 text-warning mb-2">👥</div>
+                        <h4 class="fw-bold">Clientes</h4>
+                        <p class="text-muted small">Consulta el directorio y datos de los clientes registrados.</p>
+                        <a th:href="@{/cliente/listado}" class="btn btn-warning text-white btn-sm px-4">Ver Clientes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
