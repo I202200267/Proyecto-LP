@@ -22,20 +22,38 @@
 <body>
 	<!-- Header -->
 	<header class="header">
-		<div class="container d-flex justify-content-between align-items-center py-2">
-			<div class="btn-menu">
-				<label for="btn-menu"><i class="fa-solid fa-bars"></i></label>
+		<div class="container d-flex justify-content-between align-items-center">
+
+
+			<div class="d-flex align-items-center gap-3">
+
+				<div class="btn-menu mb-0">
+					<label for="btn-menu" class="m-0 p-1 d-flex align-items-center">
+						<i class="fa-solid fa-bars"></i>
+					</label>
+				</div>
+
+				<div style="border-left: 1px solid rgba(255, 255, 255, 0.2); height: 24px;"></div>
+
+				<a th:href="@{/home/dashboard}" class="d-flex align-items-center gap-2 text-decoration-none">
+					<img th:src="@{/imagenes/logo.jpg}" alt="Moviliza Logo"
+						style="height: 35px; width: auto; object-fit: contain;" class="rounded">
+					<span class="text-white fw-bold fs-5 tracking-wide m-0">MOVILIZA</span>
+				</a>
 			</div>
-			<div class="text-white">
-				<h1 class="h5 m-0">ALQUILER DE VEHÍCULOS - Bienvenido, <span th:text="${session.FULL_NAME}">Nombre del usuario</span></h1>
+
+			<div class="text-white d-flex align-items-center gap-2">
+				<i class="fa-regular fa-circle-user fs-5 text-secondary"></i>
+				<span class="fs-6 m-0 opacity-75">Bienvenido, <strong th:text="${session.FULL_NAME}"
+						class="text-white opacity-100">Gustavo Echevarria</strong></span>
 			</div>
+
 		</div>
 	</header>
 
-	<!-- Checkbox toggle para el menú lateral -->
+
 	<input type="checkbox" id="btn-menu">
 
-	<!-- Menú Lateral -->
 	<div class="container-menu">
 		<div class="cont-menu">
 			<nav>

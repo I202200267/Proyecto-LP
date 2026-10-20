@@ -6,16 +6,14 @@
 }
 
 body {
-	background-image: url('/imagenes/alquilercarros.jpg');
-	background-size: cover;
-	background-attachment: fixed;
-	background-repeat: no-repeat;
-	background-position: center;
-	min-height: 100vh;
-	padding-top: 70px; 
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/imagenes/alquilercarros.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 100vh;
+    padding-top: 70px;
 }
-
-/* Encabezado fijo superior */
 .header {
 	width: 100%;
 	position: fixed;
@@ -23,13 +21,14 @@ body {
 	left: 0;
 	background-color: #000000 !important;
 	z-index: 10;
-	padding: 10px 20px;
+	padding: 10px 0;
 }
 
 .btn-menu label {
 	color: #fff;
-	font-size: 24px;
+	font-size: 22px;
 	cursor: pointer;
+	line-height: 1;
 }
 
 input#btn-menu {
@@ -68,8 +67,8 @@ input#btn-menu {
 	transform: translateX(0);
 }
 
-.cont-menu nav {
-	padding-top: 60px;
+.cont-menu nav {	
+	padding-top: 80px;
 }
 
 .cont-menu nav a {
@@ -89,11 +88,12 @@ input#btn-menu {
 
 .cont-menu label {
 	position: absolute;
-	right: 10px;
-	top: 10px;
+	right: 15px;
+	top: 15px;
 	color: #fff;
 	cursor: pointer;
 	font-size: 20px;
+	z-index: 2;
 }
 
 main .container, 

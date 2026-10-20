@@ -22,7 +22,7 @@ public class VehiculoService {
 	}
 
 	public List<Vehiculo> getAllActive() {
-		return vehiculoRepository.findAll();
+		return vehiculoRepository.findByEstado("DISPONIBLE");
 	}
 	
 	@Transactional
@@ -64,7 +64,17 @@ public class VehiculoService {
 				return new ResultadoResponse(false, "Vehículo no encontrado");
 			}
 			
-			String nuevoEstado = "DISPONIBLE".equals(vehiculo.getEstado()) ? "MANTENIMIENTO" : "DISPONIBLE";
+			String estadoActual = vehiculo.getEstado();
+			String nuevoEstado;
+
+			if ("DISPONIBLE".equalsIgnoreCase(estadoActual)) {
+				nuevoEstado = "ALQUILADO";
+			} else if ("ALQUILADO".equalsIgnoreCase(estadoActual)) {
+				nuevoEstado = "MANTENIMIENTO";
+			} else {
+				nuevoEstado = "DISPONIBLE";
+			}
+
 			vehiculo.setEstado(nuevoEstado);
 			vehiculoRepository.save(vehiculo);
 			

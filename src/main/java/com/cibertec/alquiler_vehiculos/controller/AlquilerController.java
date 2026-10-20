@@ -41,7 +41,6 @@ public class AlquilerController {
 	private final UsuarioService usuarioService;
 	private final AlquilerService alquilerService;
 
-	// Inicializamos la lista de vehículos seleccionados en sesión
 	@ModelAttribute("seleccionados")
 	public List<VehiculoSeleccionado> inicio() {
 		return new ArrayList<VehiculoSeleccionado>();
@@ -52,7 +51,7 @@ public class AlquilerController {
 		model.addAttribute("lstAlquileres", alquilerService.search(null));
 		return "alquiler/listado";
 	}
-	
+
 	@GetMapping("nuevo")
 	public String nuevo(Model model) {
 		model.addAttribute("vehiculos", vehiculoService.getAllActive());
@@ -61,8 +60,9 @@ public class AlquilerController {
 	}
 
 	@GetMapping("validar-cliente")
-	public String validarCliente(@RequestParam(required = false) String accion, @RequestParam(required = false) String dni,
-			RedirectAttributes flash, HttpSession session, SessionStatus sessionStatus) {
+	public String validarCliente(@RequestParam(required = false) String accion,
+			@RequestParam(required = false) String dni, RedirectAttributes flash, HttpSession session,
+			SessionStatus sessionStatus) {
 
 		if ("limpiar".equals(accion)) {
 			session.removeAttribute("cliente");
@@ -90,6 +90,13 @@ public class AlquilerController {
 	public String agregar(@ModelAttribute VehiculoSeleccionado vehiculoSeleccionado,
 			@ModelAttribute("seleccionados") List<VehiculoSeleccionado> seleccionados, RedirectAttributes flash) {
 
+		var vehiculoDb = vehiculoService.getOne(vehiculoSeleccionado.getIdVehiculo());
+		
+		if (vehiculoDb != null && !"DISPONIBLE".equalsIgnoreCase(vehiculoDb.getEstado())) {
+			flash.addFlashAttribute("alert", Alert.sweetAlertInfo("No se puede alquilar un vehículo en estado " + vehiculoDb.getEstado().toLowerCase()));
+			return "redirect:/alquiler/nuevo";
+		}
+
 		boolean existe = seleccionados.stream()
 				.anyMatch(v -> v.getIdVehiculo().equals(vehiculoSeleccionado.getIdVehiculo()));
 
@@ -112,8 +119,8 @@ public class AlquilerController {
 
 	@PostMapping("registrar")
 	public String registrar(@ModelAttribute Alquiler alquiler,
-			@ModelAttribute("seleccionados") List<VehiculoSeleccionado> seleccionados,
-			RedirectAttributes flash, HttpSession session, SessionStatus sessionStatus) {
+			@ModelAttribute("seleccionados") List<VehiculoSeleccionado> seleccionados, RedirectAttributes flash,
+			HttpSession session, SessionStatus sessionStatus) {
 
 		Integer idUsuario = (Integer) session.getAttribute("ID_USUARIO");
 
@@ -139,25 +146,29 @@ public class AlquilerController {
 			return "redirect:/alquiler/nuevo";
 		}
 
+		alquiler.setFechaAlquiler(java.time.LocalDateTime.now());
+		alquiler.setFechaInicio(java.time.LocalDate.now());
+		alquiler.setFechaFin(java.time.LocalDate.now().plusDays(1));
+		alquiler.setEstado("REGISTRADO");
+
 		List<DetalleAlquiler> lstDetalle = seleccionados.stream().map(item -> {
 			var vehiculo = vehiculoService.getOne(item.getIdVehiculo());
-			return new DetalleAlquiler(
-					alquiler,
-					vehiculo,
-					item.getDias(),
-					item.getPrecioDiario(),
-					item.getSubtotal()
-			);
+			return new DetalleAlquiler(alquiler, vehiculo, item.getDias(), item.getPrecioDiario(), item.getSubtotal());
 		}).toList();
 
 		alquiler.setLstDetalleAlquiler(lstDetalle);
 
+		java.math.BigDecimal montoTotal = lstDetalle.stream().map(DetalleAlquiler::getSubtotal)
+				.filter(java.util.Objects::nonNull).reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+
+		alquiler.setMontoTotal(montoTotal);
+
 		var response = alquilerService.create(alquiler);
-		
+
 		if (response.success()) {
 			sessionStatus.setComplete();
 		}
-		
+
 		flash.addFlashAttribute("alert", Alert.sweetToast(response.mensaje(), "success", 5000));
 		return "redirect:/alquiler/listado";
 	}

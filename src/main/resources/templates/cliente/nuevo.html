@@ -1,56 +1,95 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/layout}">
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="layouts/layout :: layoutBase(~{::contenido})">
 <head>
-    <title>Nuevo Cliente</title>
+    <meta charset="UTF-8">
+    <title>Registrar Cliente</title>
 </head>
 <body>
-    <div layout:fragment="content">
+
+    <div th:fragment="contenido">
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-success text-white">
-                        <h4 class="mb-0"><i class="fa-solid fa-user-plus me-2"></i>Registrar Nuevo Cliente</h4>
+            <div class="col-md-8 col-lg-6">
+                
+                <!-- Tarjeta contenedora con fondo translúcido -->
+                <div class="card shadow-lg border-0 rounded-3 bg-white bg-opacity-90 my-4">
+                    <div class="card-header bg-primary text-white py-3 rounded-top">
+                        <h4 class="mb-0 fw-bold text-center">
+                            <i class="bi bi-person-plus-fill me-2"></i>Registrar Nuevo Cliente
+                        </h4>
                     </div>
-                    <div class="card-body">
+
+                    <div class="card-body p-4">
+                        <!-- Ajusta el action y th:object según los nombres de tu controlador/modelo -->
                         <form th:action="@{/cliente/registrar}" th:object="${cliente}" method="post">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="dni" class="form-label">DNI:</label>
-                                    <input type="text" id="dni" th:field="*{dni}" maxlength="15" class="form-control" required />
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="nombres" class="form-label">Nombres:</label>
-                                    <input type="text" id="nombres" th:field="*{nombres}" class="form-control" required />
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="apellidos" class="form-label">Apellidos:</label>
-                                    <input type="text" id="apellidos" th:field="*{apellidos}" class="form-control" required />
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="telefono" class="form-label">Teléfono:</label>
-                                    <input type="text" id="telefono" th:field="*{telefono}" class="form-control" />
-                                </div>
-                                <div class="col-md-12">
-                                    <label for="email" class="form-label">Email:</label>
-                                    <input type="email" id="email" th:field="*{email}" class="form-control" />
+                            
+                            <!-- Campo DNI -->
+                            <div class="mb-3">
+                                <label for="dni" class="form-label fw-semibold">DNI:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-card-heading"></i></span>
+                                    <input type="text" id="dni" th:field="*{dni}" class="form-control" 
+                                           placeholder="Ej. 76543210" maxlength="8" required />
                                 </div>
                             </div>
 
-                            <div class="d-flex justify-content-end gap-2 mt-4">
-                                <a th:href="@{/cliente/listado}" class="btn btn-secondary">
-                                    <i class="fa-solid fa-arrow-left me-1"></i>Cancelar
+                            <!-- Campo Nombres -->
+                            <div class="mb-3">
+                                <label for="nombres" class="form-label fw-semibold">Nombres:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                    <input type="text" id="nombres" th:field="*{nombres}" class="form-control" 
+                                           placeholder="Ej. Juan Carlos" required />
+                                </div>
+                            </div>
+
+                            <!-- Campo Apellidos -->
+                            <div class="mb-3">
+                                <label for="apellidos" class="form-label fw-semibold">Apellidos:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person-vcard"></i></span>
+                                    <input type="text" id="apellidos" th:field="*{apellidos}" class="form-control" 
+                                           placeholder="Ej. Pérez Gómez" required />
+                                </div>
+                            </div>
+
+                            <!-- Campo Teléfono -->
+                            <div class="mb-3">
+                                <label for="telefono" class="form-label fw-semibold">Teléfono:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-telephone-fill"></i></span>
+                                    <input type="text" id="telefono" th:field="*{telefono}" class="form-control" 
+                                           placeholder="Ej. 987654321" required />
+                                </div>
+                            </div>
+
+                            <!-- Campo Email -->
+                            <div class="mb-4">
+                                <label for="email" class="form-label fw-semibold">Email:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                                    <input type="email" id="email" th:field="*{email}" class="form-control" 
+                                           placeholder="Ej. cliente@correo.com" required />
+                                </div>
+                            </div>
+
+                            <!-- Botones de Acción -->
+                            <div class="d-flex justify-content-between align-items-center pt-2">
+                                <a th:href="@{/cliente/listado}" class="btn btn-outline-secondary px-4">
+                                    <i class="bi bi-arrow-left me-1"></i> Cancelar
                                 </a>
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fa-solid fa-floppy-disk me-1"></i>Guardar Cliente
+                                <button type="submit" class="btn btn-success px-4">
+                                    <i class="bi bi-check-circle me-1"></i> Guardar Cliente
                                 </button>
                             </div>
+
                         </form>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
+
 </body>
 </html>

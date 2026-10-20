@@ -1,6 +1,7 @@
 package com.cibertec.alquiler_vehiculos.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,8 +22,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "tb_alquiler")
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 
@@ -44,8 +44,17 @@ public class Alquiler {
     @Column(name = "fecha_alquiler")
     private LocalDateTime fechaAlquiler;
 
+    @Column(name = "fecha_inicio")
+    private LocalDate fechaInicio; 
+
+    @Column(name = "fecha_fin")
+    private LocalDate fechaFin;
+    
     @Column(name = "monto_total")
     private BigDecimal montoTotal;
+
+    @Column(name = "estado")
+    private String estado;
 
     @OneToMany(mappedBy = "alquiler", cascade = CascadeType.ALL)
     private List<DetalleAlquiler> lstDetalleAlquiler;
