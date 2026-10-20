@@ -8,7 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cibertec.alquiler_vehiculos.dto.AlquilerFilter;
 import com.cibertec.alquiler_vehiculos.dto.ResultadoResponse;
 import com.cibertec.alquiler_vehiculos.model.Alquiler;
+import com.cibertec.alquiler_vehiculos.model.DetalleAlquiler;
+import com.cibertec.alquiler_vehiculos.model.Vehiculo;
 import com.cibertec.alquiler_vehiculos.repository.AlquilerRepository;
+import com.cibertec.alquiler_vehiculos.repository.VehiculoRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class AlquilerService {
 
     private final AlquilerRepository alquilerRepository;
+    private final VehiculoRepository vehiculoRepository;
 
     public List<Alquiler> search(AlquilerFilter filter) {
         return alquilerRepository.findAll();
@@ -26,8 +30,18 @@ public class AlquilerService {
     public ResultadoResponse create(Alquiler alquiler) {
         try {
             var registrado = alquilerRepository.save(alquiler);
+
+            if (alquiler.getLstDetalleAlquiler() != null) {
+                for (DetalleAlquiler detalle : alquiler.getLstDetalleAlquiler()) {
+                    Vehiculo vehiculo = detalle.getVehiculo();
+                    if (vehiculo != null) {
+                        vehiculo.setEstado("ALQUILADO");
+                        vehiculoRepository.save(vehiculo);
+                    }
+                }
+            }
+
             var mensaje = String.format("Alquiler N° %d registrado exitosamente", registrado.getIdAlquiler());
-            
             return new ResultadoResponse(true, mensaje);
         } catch (Exception e) {
             e.printStackTrace();

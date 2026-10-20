@@ -16,7 +16,6 @@
 			</div>
 		</div>
 
-		<!-- Tabla de Listado de Alquileres -->
 		<div class="card shadow-sm">
 			<div class="card-body">
 				<div class="table-responsive">
@@ -35,12 +34,20 @@
 							<tr th:each="alquiler : ${lstAlquileres}">
 								<td th:text="${alquiler.idAlquiler}" class="text-center"></td>
 								<td th:text="${alquiler.fechaAlquiler}" class="text-center"></td>
-								<td th:text="${alquiler.cliente != null ? alquiler.cliente.nombres + ' ' + alquiler.cliente.apellidos : 'N/A'}"></td>
-								<td th:text="${alquiler.usuario != null ? alquiler.usuario.cuenta : 'N/A'}"></td>
-								<td th:text="${alquiler.montoTotal != null ? #numbers.formatCurrency(alquiler.montoTotal) : 'S/ 0.00'}" class="text-end"></td>
+								<td
+									th:text="${alquiler.cliente != null ? alquiler.cliente.nombres + ' ' + alquiler.cliente.apellidos : 'N/A'}">
+								</td>
+								<td th:text="${alquiler.usuario != null ? alquiler.usuario.nombre : 'N/A'}"></td>
+								<td th:text="${alquiler.montoTotal != null ? #numbers.formatCurrency(alquiler.montoTotal) : 'S/ 0.00'}"
+									class="text-end"></td>
 								<td class="text-center">
-									<!-- Botón para ver el detalle o comprobante si se desea expandir -->
-									<button type="button" class="btn btn-info btn-sm text-white" title="Ver Detalle">
+									
+									<button type="button" class="btn btn-info btn-sm text-white" title="Ver Detalle"
+										data-bs-toggle="modal" data-bs-target="#modalDetalle"
+										th:data-id="${alquiler.idAlquiler}" th:data-fecha="${alquiler.fechaAlquiler}"
+										th:data-cliente="${alquiler.cliente != null ? alquiler.cliente.nombres + ' ' + alquiler.cliente.apellidos : 'N/A'}"
+										th:data-usuario="${alquiler.usuario != null ? alquiler.usuario.nombre : 'N/A'}"
+										th:data-monto="${alquiler.montoTotal != null ? #numbers.formatCurrency(alquiler.montoTotal) : 'S/ 0.00'}">
 										<i class="fa-solid fa-eye"></i>
 									</button>
 								</td>
@@ -52,9 +59,42 @@
 		</div>
 	</div>
 
+	<div class="modal fade" id="modalDetalle" tabindex="-1" aria-labelledby="modalDetalleLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header bg-dark text-white">
+					<h5 class="modal-title" id="modalDetalleLabel">Detalle del Alquiler N° <span
+							id="lblIdAlquiler"></span></h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="row mb-3">
+						<div class="col-md-6">
+							<p><strong>Fecha de Registro:</strong> <span id="lblFecha"></span></p>
+							<p><strong>Cliente:</strong> <span id="lblCliente"></span></p>
+						</div>
+						<div class="col-md-6">
+							<p><strong>Atendido por:</strong> <span id="lblUsuario"></span></p>
+							<p><strong>Monto Total:</strong> <span id="lblMonto" class="text-success fw-bold"></span>
+							</p>
+						</div>
+					</div>
+					<hr>
+					<h6 class="text-primary mb-3"><i class="fa-solid fa-car"></i> Información del Comprobante</h6>
+					<div class="alert alert-secondary text-center mb-0" role="alert">
+						Transacción de alquiler de vehículos procesada con éxito en el sistema.
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<th:block th:utext="${alert}"></th:block>
 
-	<!-- Script de inicialización de DataTables para el listado -->
 	<script th:inline="none">
 		$(document).ready(function () {
 			const idTabla = '#tblAlquileres';
@@ -70,6 +110,19 @@
 				},
 				order: [[0, "desc"]]
 			});
+
+			const modalDetalle = document.getElementById('modalDetalle');
+			if (modalDetalle) {
+				modalDetalle.addEventListener('show.bs.modal', function (event) {
+					const button = event.relatedTarget;
+
+					document.getElementById('lblIdAlquiler').textContent = button.getAttribute('data-id');
+					document.getElementById('lblFecha').textContent = button.getAttribute('data-fecha');
+					document.getElementById('lblCliente').textContent = button.getAttribute('data-cliente');
+					document.getElementById('lblUsuario').textContent = button.getAttribute('data-usuario');
+					document.getElementById('lblMonto').textContent = button.getAttribute('data-monto');
+				});
+			}
 		});
 	</script>
 </div>
