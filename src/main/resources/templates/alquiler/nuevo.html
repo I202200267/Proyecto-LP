@@ -5,7 +5,6 @@
 
 	<div class="container mt-4">
 
-		<!-- Formulario principal de Registro que envuelve toda la vista -->
 		<form th:action="@{/alquiler/registrar}" method="post">
 			
 			<div class="row mb-3 mt-5 align-items-center">
@@ -34,7 +33,7 @@
 						</p>
 					</div>
 					<div class="col-md-6 ms-auto">
-						<!-- Formulario para buscar cliente por DNI -->
+						
 						<form th:action="@{/alquiler/validar-cliente}" method="get" th:if="${cliente == null}">
 							<div class="row">
 								<label for="dni" class="col-sm-6 col-form-label">Buscar cliente por DNI:</label>
@@ -49,7 +48,7 @@
 							</div>
 						</form>
 
-						<!-- Vista cuando el cliente ya está seleccionado (Muestra el nombre y el botón limpiar) -->
+						
 						<div class="row" th:unless="${cliente == null}">
 							<label class="col-sm-6 col-form-label">Cliente Seleccionado:</label>
 							<div class="col-sm-6">
@@ -66,16 +65,16 @@
 			</div>
 		</div>
 
-		<!-- Sección de Selección de Vehículo -->
+		
 		<div class="card mb-4">
 			<div class="card-body">
 
-				<!-- Botón para abrir el modal -->
+				
 				<button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalVehiculos">
 					<i class="fa-solid fa-magnifying-glass"></i> Seleccionar Vehículo
 				</button>
 
-				<!-- Formulario para agregar vehículo seleccionado -->
+			
 				<form id="form-agregar-vehiculo" novalidate th:action="@{/alquiler/agregar}" method="post"
 					th:object="${vehiculoSeleccionado}" class="needs-validation">
 					<div class="row g-2 align-items-end">
@@ -109,7 +108,6 @@
 			</div>
 		</div>
 
-		<!-- Tabla de Detalle de Vehículos Seleccionados -->
 		<div class="card">
 			<div class="card-body">
 				<h5>Vehículos Seleccionados</h5>
@@ -150,12 +148,11 @@
 		</div>
 	</div>
 
-	<!-- Fragmento Modal de Selección de Vehículos -->
 	<div th:replace="fragmento/modal-vehiculos :: modal-vehiculos(${vehiculos}, 'modalVehiculos')"></div>
 
 	<th:block th:utext="${alert}"></th:block>
 
-	<!-- Script con jQuery para transferir datos del modal al formulario -->
+
 	<script>
 		$(document).ready(function () {
 			$(document).on('click', '.btnSeleccionarVehiculo', function () {

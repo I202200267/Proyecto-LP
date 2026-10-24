@@ -1,12 +1,16 @@
 package com.cibertec.alquiler_vehiculos.controller;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,7 +18,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.cibertec.alquiler_vehiculos.dto.AlquilerFilter;
 import com.cibertec.alquiler_vehiculos.dto.VehiculoSeleccionado;
 import com.cibertec.alquiler_vehiculos.model.Alquiler;
 import com.cibertec.alquiler_vehiculos.model.Cliente;
@@ -22,24 +25,28 @@ import com.cibertec.alquiler_vehiculos.model.DetalleAlquiler;
 import com.cibertec.alquiler_vehiculos.model.Usuario;
 import com.cibertec.alquiler_vehiculos.service.AlquilerService;
 import com.cibertec.alquiler_vehiculos.service.ClienteService;
+import com.cibertec.alquiler_vehiculos.service.ReporteService;
 import com.cibertec.alquiler_vehiculos.service.UsuarioService;
 import com.cibertec.alquiler_vehiculos.service.VehiculoService;
 import com.cibertec.alquiler_vehiculos.util.Alert;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperPrint;
 
 @Controller
 @RequestMapping("alquiler")
 @RequiredArgsConstructor
 @SessionAttributes({ "seleccionados", "cliente" })
-
 public class AlquilerController {
 
 	private final VehiculoService vehiculoService;
 	private final ClienteService clienteService;
 	private final UsuarioService usuarioService;
 	private final AlquilerService alquilerService;
+	private final ReporteService reporteService;
 
 	@ModelAttribute("seleccionados")
 	public List<VehiculoSeleccionado> inicio() {
@@ -48,7 +55,17 @@ public class AlquilerController {
 
 	@GetMapping("listado")
 	public String listado(Model model, HttpSession session) {
-		model.addAttribute("lstAlquileres", alquilerService.search(null));
+		Integer idTipo = (Integer) session.getAttribute("ID_TIPO");
+		Integer idUsuario = (Integer) session.getAttribute("ID_USUARIO");
+
+		if (idTipo != null && idTipo == 2) {
+			// Si es Cajero, solo ve sus propios alquileres
+			model.addAttribute("lstAlquileres", alquilerService.findByUsuario(idUsuario));
+		} else {
+			// Si es Administrador, ve todos los alquileres
+			model.addAttribute("lstAlquileres", alquilerService.search(null));
+		}
+		
 		return "alquiler/listado";
 	}
 
@@ -171,5 +188,25 @@ public class AlquilerController {
 
 		flash.addFlashAttribute("alert", Alert.sweetToast(response.mensaje(), "success", 5000));
 		return "redirect:/alquiler/listado";
+	}
+
+	@GetMapping("reporte/{id}")
+	public void generarReporteAlquiler(@PathVariable("id") Integer idAlquiler, HttpServletResponse response) {
+		try {
+			Map<String, Object> params = new HashMap<>();		
+			params.put("id_alquiler", idAlquiler);
+
+			JasperPrint jasperPrint = reporteService.getJasperPrint(params, "/reportes/alquiler.jrxml");
+
+			response.setContentType("application/pdf");
+			response.setHeader("Content-Disposition", "inline; filename=comprobante_alquiler_" + idAlquiler + ".pdf");
+
+			final OutputStream outStream = response.getOutputStream();
+			JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
+			outStream.flush();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -15,6 +15,7 @@ import com.cibertec.alquiler_vehiculos.service.CategoriaService;
 import com.cibertec.alquiler_vehiculos.service.VehiculoService;
 import com.cibertec.alquiler_vehiculos.util.Alert;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -47,14 +48,28 @@ public class VehiculoController {
 	}
 	
 	@GetMapping("edicion/{id}")
-	public String edicion(@PathVariable Integer id, Model model) {
+	public String edicion(@PathVariable Integer id, Model model, HttpSession session, RedirectAttributes flash) {
+		Integer idTipo = (Integer) session.getAttribute("ID_TIPO");
+		
+		if (idTipo != null && idTipo == 2) {
+			flash.addFlashAttribute("alert", Alert.sweetAlertInfo("Acceso denegado: Los cajeros no pueden editar vehículos."));
+			return "redirect:/vehiculo/listado";
+		}
+		
 		model.addAttribute("lstCategorias", categoriaService.getAll());
 		model.addAttribute("vehiculo", vehiculoService.getOne(id));
 		return "vehiculo/edicion";
 	}
 	
 	@PostMapping("guardar")
-	public String guardar(@ModelAttribute Vehiculo vehiculo, RedirectAttributes flash) {
+	public String guardar(@ModelAttribute Vehiculo vehiculo, RedirectAttributes flash, HttpSession session) {
+		Integer idTipo = (Integer) session.getAttribute("ID_TIPO");
+		
+		if (idTipo != null && idTipo == 2) {
+			flash.addFlashAttribute("alert", Alert.sweetAlertInfo("Acceso denegado: Los cajeros no pueden modificar vehículos."));
+			return "redirect:/vehiculo/listado";
+		}
+		
 		var response = vehiculoService.update(vehiculo);
 		flash.addFlashAttribute("alert", Alert.sweetToast(response.mensaje(), "success", 5000));
 		
@@ -62,7 +77,7 @@ public class VehiculoController {
 	}
 
 	@PostMapping("cambiar-estado")
-	public String cambiarEstado(@RequestParam Integer id, RedirectAttributes flash) {
+	public String cambiarEstado(@RequestParam Integer id, RedirectAttributes flash, HttpSession session) {
 		var response = vehiculoService.cambiarEstado(id);
 		flash.addFlashAttribute("alert", Alert.sweetToast(response.mensaje(), "success", 5000));
 		

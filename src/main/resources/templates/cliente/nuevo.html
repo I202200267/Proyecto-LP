@@ -11,7 +11,6 @@
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
                 
-                <!-- Tarjeta contenedora con fondo translúcido -->
                 <div class="card shadow-lg border-0 rounded-3 bg-white bg-opacity-90 my-4">
                     <div class="card-header bg-primary text-white py-3 rounded-top">
                         <h4 class="mb-0 fw-bold text-center">
@@ -19,11 +18,9 @@
                         </h4>
                     </div>
 
-                    <div class="card-body p-4">
-                        <!-- Ajusta el action y th:object según los nombres de tu controlador/modelo -->
+                    <div class="card-body p-4">                
                         <form th:action="@{/cliente/registrar}" th:object="${cliente}" method="post">
-                            
-                            <!-- Campo DNI -->
+                                                 
                             <div class="mb-3">
                                 <label for="dni" class="form-label fw-semibold">DNI:</label>
                                 <div class="input-group">
@@ -33,7 +30,6 @@
                                 </div>
                             </div>
 
-                            <!-- Campo Nombres -->
                             <div class="mb-3">
                                 <label for="nombres" class="form-label fw-semibold">Nombres:</label>
                                 <div class="input-group">
@@ -42,8 +38,7 @@
                                            placeholder="Ej. Juan Carlos" required />
                                 </div>
                             </div>
-
-                            <!-- Campo Apellidos -->
+    
                             <div class="mb-3">
                                 <label for="apellidos" class="form-label fw-semibold">Apellidos:</label>
                                 <div class="input-group">
@@ -53,7 +48,6 @@
                                 </div>
                             </div>
 
-                            <!-- Campo Teléfono -->
                             <div class="mb-3">
                                 <label for="telefono" class="form-label fw-semibold">Teléfono:</label>
                                 <div class="input-group">
@@ -63,7 +57,6 @@
                                 </div>
                             </div>
 
-                            <!-- Campo Email -->
                             <div class="mb-4">
                                 <label for="email" class="form-label fw-semibold">Email:</label>
                                 <div class="input-group">
@@ -73,7 +66,6 @@
                                 </div>
                             </div>
 
-                            <!-- Botones de Acción -->
                             <div class="d-flex justify-content-between align-items-center pt-2">
                                 <a th:href="@{/cliente/listado}" class="btn btn-outline-secondary px-4">
                                     <i class="bi bi-arrow-left me-1"></i> Cancelar

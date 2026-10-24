@@ -41,7 +41,7 @@
 								<td th:text="${alquiler.montoTotal != null ? #numbers.formatCurrency(alquiler.montoTotal) : 'S/ 0.00'}"
 									class="text-end"></td>
 								<td class="text-center">
-									
+									<!-- Botón para ver detalle (Modal) -->
 									<button type="button" class="btn btn-info btn-sm text-white" title="Ver Detalle"
 										data-bs-toggle="modal" data-bs-target="#modalDetalle"
 										th:data-id="${alquiler.idAlquiler}" th:data-fecha="${alquiler.fechaAlquiler}"
@@ -50,6 +50,11 @@
 										th:data-monto="${alquiler.montoTotal != null ? #numbers.formatCurrency(alquiler.montoTotal) : 'S/ 0.00'}">
 										<i class="fa-solid fa-eye"></i>
 									</button>
+
+									<!-- BOTÓN DE REPORTE PDF -->
+									<a th:href="@{/alquiler/reporte/{id}(id=${alquiler.idAlquiler})}" target="_blank" class="btn btn-danger btn-sm" title="Generar PDF">
+										<i class="fa-solid fa-file-pdf"></i>
+									</a>
 								</td>
 							</tr>
 						</tbody>

@@ -9,4 +9,6 @@ import com.cibertec.alquiler_vehiculos.model.Alquiler;
 public interface AlquilerRepository extends JpaRepository<Alquiler, Integer> {
 	
 	List<Alquiler> findAllByOrderByIdAlquilerDesc();
+	
+	List<Alquiler> findByUsuario_IdUsuarioOrderByIdAlquilerDesc(Integer idUsuario);
 }

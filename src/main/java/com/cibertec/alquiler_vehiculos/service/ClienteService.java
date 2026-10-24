@@ -24,7 +24,7 @@ public class ClienteService {
         return clienteRepository.findById(id).orElse(null);
     }
 
-    // Método que requiere AlquilerController
+    // Método requerido por AlquilerController
     public Cliente GetOneByDni(String dni) {
         return clienteRepository.findByDni(dni);
     }

@@ -46,7 +46,7 @@ public class LoginController {
         String routeImage = "/imagenes/bienvenido.gif";
         var alert = Alert.sweetImageUrl("Bienvenido al Sistema", usuario.getNombre(), routeImage);
         flash.addFlashAttribute("alert", alert);
-        return "redirect:/alquiler/nuevo";
+        return "redirect:/home/dashboard";
     }
 
     @GetMapping("cerrar-sesion")

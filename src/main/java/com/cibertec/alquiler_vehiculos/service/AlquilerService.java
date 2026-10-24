@@ -23,7 +23,11 @@ public class AlquilerService {
     private final VehiculoRepository vehiculoRepository;
 
     public List<Alquiler> search(AlquilerFilter filter) {
-        return alquilerRepository.findAll();
+        return alquilerRepository.findAllByOrderByIdAlquilerDesc();
+    }
+
+    public List<Alquiler> findByUsuario(Integer idUsuario) {
+        return alquilerRepository.findByUsuario_IdUsuarioOrderByIdAlquilerDesc(idUsuario);
     }
 
     @Transactional
